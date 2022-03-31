@@ -1,0 +1,97 @@
+,name,smiles
+0,1-Napthyl acetate,CC(=O)OC1=CC=CC2=CC=CC=C21
+1,1-Naphthyl butyrate,CCCC(=O)OC1=CC=CC2=CC=CC=C21
+2,Glyceryl triacetate,CC(=O)OCC(COC(=O)C)OC(=O)C 
+3,Glyceryl tripropionate, CCC(=O)OCC(COC(=O)CC)OC(=O)CC 
+4,Glyceryl tributyrate,CCCC(=O)OCC(COC(=O)CCC)OC(=O)CCC
+5,Glyceryl trioctanoate,CCCCCCCC(=O)OCC(COC(=O)CCCCCCC)OC(=O)CCCCCCC 
+6,Triolein,CCCCCCCCC=CCCCCCCCC(=O)OCC(COC(=O)CCCCCCCC=CCCCCCCCC)OC(=O)CCCCCCCC=CCCCCCCCC
+7,Hexyl acetate,CCCCCCOC(=O)C
+8,Octyl acetate,CCCCCCCCOC(=O)C
+9,Dodecanoyl acetate,CCCCCCCCCCCCOC(=O)C
+10,Pentadecyl acetate ,CCCCCCCCCCCCCCCOC(=O)C 
+11,Ethyl acetate,CCOC(=O)C 
+12,Ethyl propionate,CCC(=O)OCC 
+13,Ethyl butyrate,CCCC(=O)OCC
+14,Ethyl hexanoate,CCCCCC(=O)OCC
+15,Ethyl octanoate,CCCCCCCC(=O)OCC
+16,Ethyl decanoate,CCCCCCCCCC(=O)OCC 
+17,Ethyl dodecanoate,CCCCCCCCCCCC(=O)OCC
+18,Ethyl myristate,CCCCCCCCCCCCCC(=O)OCC 
+19,Ethyl benzoate,CCOC(=O)C1=CC=CC=C1 
+20,(1R)-(-)-Menthyl acetate,C[C@@H]1CCC(C(C1)OC(=O)C)C(C)C
+21,(1S)-(+)-Menthyl acetate,C[C@H]1CCC(C(C1)OC(=O)C)C(C)C
+22,N-Benzyl-L-proline ethyl ester,CCOC(=O)[C@@H]1CCCN1CC2=CC=CC=C2
+23,N-Benzyl-D-proline ethyl ester,CCOC(=O)[C@H]1CCCN1CC2=CC=CC=C2
+24,Methyl (R)-(-)-mandelate,COC(=O)[C@@H](C1=CC=CC=C1)O
+25,Methyl (S)-(+)-mandelate,COC(=O)[C@H](C1=CC=CC=C1)O
+26,Ethyl (R)-(+)-4-chloro-3-hydroxybutyrate [E(R)CHB],CCOC(=O)C[C@H](CCl)O
+27,Ethyl (S)-(−)-4-chloro-3-hydroxybutyrate [E(S)CHB],CCOC(=O)C[C@@H](CCl)O
+28,(+)-Ethyl D-Lactate,CCOC(=O)[C@@H](C)O
+29,(−)-Ethyl L-lactate,CCOC(=O)[C@H](C)O
+30,(+)-Methyl (S)-3-hydroxybutyrate,C[C@@H](CC(=O)OC)O
+31,"Benzoic acid, 4-formyl-, phenylmethyl ester [BFPME]",C1=CC=C(C=C1)COC(=O)C2=CC=C(C=C2)C=O
+32,(-)-Methyl (R)-3-hydroxybutyrate,C[C@H](CC(=O)OC)O
+33,(1R)-(+)-Neomenthyl acetate,C[C@H]1CC[C@@H]([C@@H](C1)OC(=O)C)C(C)C
+34,(1S)-(+)-Neomenthyl acetate,C[C@@H]1CC[C@H]([C@H](C1)OC(=O)C)C(C)C
+35,Propylparaben,CCCOC(=O)C1=CC=C(C=C1)O
+36,Butylparaben,CCCCOC(=O)C1=CC=C(C=C1)O 
+37,Methyl 3-hydroxybenzoate,COC(=O)C1=CC(=CC=C1)O 
+38,Methyl 2-hydroxybenzoate,COC(=O)C1=CC=CC=C1O
+39,Phthalic acid diethyl ester,CCOC(=O)C1=CC=CC=C1C(=O)OCC
+40,(−)-Methyl (R)-3-hydroxyvalerate,CC[C@H](CC(=O)OC)O
+41,(+)-Methyl (S)-3-hydroxyvalerate,CC[C@@H](CC(=O)OC)O
+42,Benzyl (R)-(+)-2-hydroxy-3-phenylpropionate [BHPP],C1=CC=C(C=C1)C[C@H](C(=O)OCC2=CC=CC=C2)O
+43,Benzylparaben,C1=CC=C(C=C1)COC(=O)C2=CC=C(C=C2)O
+44,Methyl benzoate,COC(=O)C1=CC=CC=C1
+45,Methyl butyrate,CCCC(=O)OC
+46,Methyl decanoate,CCCCCCCCCC(=O)OC 
+47,Methyl oleate,CCCCCCCCC=CCCCCCCCC(=O)OC 
+48,Methyl hexanoate,CCCCCC(=O)OC
+49,Methyl octanoate,CCCCCCCC(=O)OC
+50,Methyl dodecanoate,CCCCCCCCCCCC(=O)OC 
+51,Methyl myristate,CCCCCCCCCCCCCC(=O)OC 
+52,Propyl propionate,CCCOC(=O)CC 
+53,Propyl butyrate,CCCC(=O)OCCC
+54,Propyl hexanoate,CCCCCC(=O)OCCC
+55,Phenylethyl cinnamate,C1=CC=C(C=C1)CCOC(=O)C=CC2=CC=CC=C2 
+56,Isobutyl cinnamate,CC(C)COC(=O)C=CC1=CC=CC=C1 
+57,"Methyl 2,5-dihydroxycinnamate",COC(=O)/C=C/C1=C(C=CC(=C1)O)O
+58,Methyl cinnamate,COC(=O)C=CC1=CC=CC=C1 
+59,Methyl ferulate,COC1=C(C=CC(=C1)C=CC(=O)OC)O 
+60,Vinyl acetate,CC(=O)OC=C 
+61,Vinyl propionate,CCC(=O)OC=C 
+62,Vinyl butyrate,CCCC(=O)OC=C
+63,Vinyl laurate,CCCCCCCCCCCC(=O)OC=C
+64,Vinyl myristate,CCCCCCCCCCCCCC(=O)OC=C 
+65,Vinyl palmitate,CCCCCCCCCCCCCCCC(=O)OC=C 
+66,Vinyl oleate,CCCCCCCCC=CCCCCCCCC(=O)OC=C 
+67,Vinyl benzoate,C=COC(=O)C1=CC=CC=C1 
+68,Vinyl crotonate,CC=CC(=O)OC=C 
+69,Vinyl acrylate,C=CC(=O)OC=C 
+70,Geranyl acetate,CC(=CCCC(=CCOC(=O)C)C)C 
+71,3-Methyl-3-buten-1-yl acetate,CC(=C)CCOC(=O)C
+72,Ethyl 2-ethylacetoacetate,CCC(C(=O)C)C(=O)OCC 
+73,Ethyl 2-methylacetoacetate,CCOC(=O)C(C)C(=O)C 
+74,Ethyl 3-oxohexanoate,CCCC(=O)CC(=O)OCC 
+75,Ethyl acetoacetate,CCOC(=O)CC(=O)C 
+76,Ethyl propionylacetate,CCC(=O)CC(=O)OCC 
+77,ϒ-Valerolactone,CC1CCC(=O)O1
+78,Methyl glycolate,COC(=O)CO
+79,D-Pantolactone,CC1(COC(=O)[C@@H]1O)C
+80,L-Pantolactone,CC1(COC(=O)[C@H]1O)C
+81,(1R)-(-)-dimenthyl succinate,C[C@@H]1CC[C@H]([C@@H](C1)OC(=O)CCC(=O)O[C@@H]2C[C@@H](CC[C@H]2C(C)C)C)C(C)C
+82,Ethyl 2-chlorobenzoate,CCOC(=O)C1=CC=CC=C1Cl 
+83,Cyclohexyl butyrate,CCCC(=O)OC1CCCCC1
+84,n-Pentyl benzoate,CCCCCOC(=O)C1=CC=CC=C1 
+85,"2,4-Dichlorophenyl 2,4-dichlorobenzoate [DCPDCB]",C1=CC(=C(C=C1Cl)Cl)C(=O)OC2=C(C=C(C=C2)Cl)Cl
+86,"2,4-Dichlorobenzyl 2,4-dichlorobenzoate  [DCBDCB]",C1=CC(=C(C=C1Cl)Cl)COC(=O)C2=C(C=C(C=C2)Cl)Cl
+87,"Diethyl-2,6-dimethyl 4-phenyl-1,4-dihydro pyridine-3,5-dicarboxylate [DDPDPDC]",CCOC(=O)C1=C(NC(=C(C1C2=CC=CC=C2)C(=O)OCC)C)C
+88,(+)-Methyl D-Lactate,C[C@H](C(=O)OC)O
+89,(-)-Methyl L-Lactate,C[C@@H](C(=O)OC)O
+90,Propyl acetate,CCCOC(=O)C 
+91,Butyl acetate,CCCCOC(=O)C 
+92,Phenyl acetate,CC(=O)OC1=CC=CC=C1 
+93,Phenyl propionate,CCC(=O)OC1=CC=CC=C1 
+94,Glucose pentaacetate,CC(=O)OCC(C(C(C(C=O)OC(=O)C)OC(=O)C)OC(=O)C)OC(=O)C 
+95,Glyceryl trilaurate,CCCCCCCCCCCC(=O)OCC(COC(=O)CCCCCCCCCCC)OC(=O)CCCCCCCCCCC
