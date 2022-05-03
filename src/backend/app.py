@@ -1,79 +1,189 @@
-from flask import Flask, flash, request, redirect, url_for, abort
-from werkzeug.utils import secure_filename
+import datetime
+import uuid
 import os
+from pathlib import Path
+from typing import Literal, Optional
 
-from utils.job_management import generate_job_id
-import pipeline.data_process_new
+import uvicorn
+from fastapi import FastAPI, UploadFile, HTTPException, Header
+from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import FileResponse
 
-# np imports
-import numpy as np
-import pandas as pd
+import worker
+from shared_constants import secret
 
-UPLOAD_FOLDER = 'jobs'
+import redis
 
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = "test"
+app = FastAPI()
+
+# CORS For local development (TODO: Remove this in production)
+app.add_middleware(CORSMiddleware, allow_origins="*")
+
+# Create upload folder
+UPLOAD_FOLDER = Path('jobs')
+UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
+
+redis_client = redis.from_url(os.environ.get('REDIS_JOB_DB'))
 
 
-@app.route("/")
+@app.get("/")
 def hello_world():
-    return "<p>Hello, World!</p>"
+    return "Hello, World"
 
 
-@app.route("/preprocess/load_seq", methods=['POST'])
-def load_seq():
+@app.post("/file/upload")
+async def upload_file(job_id: str, upload: UploadFile, job_type: Literal['seq', 'sub']):
     """
     Upload a csv file containing sequences to the server for preprocessing
+
+    :param job_id: Job ID
+    :param upload: File to upload
+    :param job_type: Type of file, either 'seq' or 'sub'
+    :return File ID
     """
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            abort(400, "No file part")
-        file = request.files['file']
-        if file:
-            filename = generate_job_id('seq')
-            upload_folder = os.path.join(app.instance_path, app.config["UPLOAD_FOLDER"])
-            if not os.path.exists(upload_folder):
-                os.makedirs(upload_folder)
-            file.save(os.path.join(upload_folder, filename))
-            return filename
+    if not job_type in ['seq', 'sub']:
+        raise HTTPException(400)
+    if not job_id:
+        raise HTTPException(400)
+    file_id = job_type + '_' + job_id
+
+    # Write file
+    (UPLOAD_FOLDER / file_id).write_bytes(await upload.read())
+
+    return {'file_id': file_id}
 
 
-@app.route("/preprocess/load_sub", methods=['POST'])
-def load_sub():
-    """
-    Upload a csv file containing substrates to the server for preprocessing
-    """
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            abort(400, "No file part")
-        file = request.files['file']
-        if file:
-            filename = generate_job_id('sub')
-            upload_folder = os.path.join(app.instance_path, app.config["UPLOAD_FOLDER"])
-            if not os.path.exists(upload_folder):
-                os.makedirs(upload_folder)
-            file.save(os.path.join(upload_folder, filename))
-            return filename
+def internal_validate(job_id: str, file_name: Optional[str], auth: str) -> Path:
+    if not auth == secret:
+        raise HTTPException(401)
+
+    return UPLOAD_FOLDER / job_id if not file_name else UPLOAD_FOLDER / (job_id + '.dir') / file_name
 
 
-@app.route("/preprocess/seq_stat", methods=['GET'])
-def seq_stat():
+@app.get("/file/internal/read")
+async def file_internal_read(job_id: str, file_name: Optional[str] = None, auth: str = Header(None)):
     """
-    Given a uuid associated with an uploaded sequence file, return
-    basic statistics about the sequence file
+    Read internal temporary file stored by a worker
+
+    File Structure:
+
+    UPLOAD_FOLDER
+    - job_id: File uploaded by the user
+    - file_id.dir
+        - file_name: File uploaded by a worker
+
+    :param job_id: Sequences file ID
+    :param file_name: File name under the ID
+    :param auth: Secret string to verify that the request comes from a worker
+                 (must be the same as the text in the secret variable)
+    :return: File
     """
-    if request.method == 'GET':
-        if 'filename' not in request.args:
-            abort(400, "No filename")
-        filename = request.args['filename']
-        if not os.path.exists(os.path.join(app.instance_path, app.config["UPLOAD_FOLDER"], filename)):
-            abort(404, "File not found")
-        full_path = os.path.join(app.instance_path, app.config["UPLOAD_FOLDER"], filename)
-        full_processed_path = os.path.join(app.instance_path, app.config["UPLOAD_FOLDER"], filename + ".processed")
-        arr = pipeline.data_process_new.read_seqs(full_path, full_processed_path)
-        stat = {
-            "num_seq": arr.size,
-            "max_len": int(arr.map(len).max()),
-        }
-        return stat
+    path = internal_validate(job_id, file_name, auth)
+
+    if not path.is_file():
+        raise HTTPException(404)
+
+    return FileResponse(path)
+
+
+@app.post("/file/internal/write")
+async def file_internal_write(upload: UploadFile, job_id: str, file_name: Optional[str] = None,
+                              auth: str = Header(None)):
+    # Even though it's validated by an auth token, we should still check for path injections
+    if '..' in file_name or '..' in job_id:
+        raise HTTPException(400)
+
+    path = internal_validate(job_id, file_name, auth)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(await upload.read())
+    return 'success'
+
+
+@app.get("/create_job")
+def create_job(job_id: str = "", submitter: str = "", job_name: str = "", submitter_email: str = ""):
+    """
+    Create a job
+
+    :param job_id: Job ID
+    :param submitter: Submitter name
+    :param job_name: Job name
+    :param submitter_email: Submitter email
+
+    :return: Job ID
+    """
+    if not job_id:
+        job_id = str(uuid.uuid4())
+    redis_client.hmset(job_id, {'job_id': job_id, 'submitter': submitter, 'job_name': job_name, 'submitter_email': submitter_email,
+                                'status': 0, 'time_created': str(datetime.datetime.now())})
+    return job_id
+
+
+@app.get("/get_job_status")
+def job_status(job_id: str):
+    """
+    Get job status
+
+    :param job_id: Job ID
+    :return: Job status
+    """
+    if not redis_client.exists(job_id):
+        raise HTTPException(404)
+    return redis_client.hgetall(job_id)
+
+
+@app.get("/get_all_jobs")
+def get_all_jobs():
+    """
+    Get all jobs
+
+    :return: List of jobs
+    """
+    keys = redis_client.keys()
+    return [redis_client.hgetall(key) for key in keys]
+
+
+@app.get("/run_prediction")
+async def run_prediction(job_id: str):
+    """
+    Run prediction
+
+    :param job_id: Job ID
+    :return: Job ID
+    """
+    print("Running prediction")
+    job = worker.predict.delay(job_id, 0)
+    return {'job_id': job.id}
+
+
+@app.get("/get_result")
+def get_result(job_id: str):
+    """
+    Get prediction result
+
+    :param job_id: Job ID
+    :return: Prediction result
+    """
+    import pandas as pd
+    if os.path.exists(f"results/{job_id}/predictions.csv"):
+        pairs = pd.read_csv(f"results/{job_id}/predictions.csv")
+        df = pd.DataFrame(pairs)
+        df.columns = ['sub', 'seq', 'val']
+        return df.to_json(orient='records')
+
+
+@app.get("/get_heatmap")
+def get_heatmap(job_id: str):
+    """
+    Get heatmap
+
+    :param job_id: Job ID
+    :return: Heatmap
+    """
+    if os.path.exists(f"results/{job_id}/heatmap.svg"):
+        # if exists, return the heatmap image
+        return FileResponse(f"results/{job_id}/heatmap.svg")
+
+
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=4000)

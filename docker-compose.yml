@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Deploy the broker.
+  rabbit:
+    hostname: rabbit
+    image: rabbitmq:3-management
+    ports:
+      # Expose the port for the worker to add/get tasks
+      - "5672:5672"
+      # OPTIONAL: Expose the GUI port
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=pwp
+      - RABBITMQ_DEFAULT_PASS=qwq
+
+  redis:
+    image: redis:6-alpine
+
+  backend:
+    container_name: b330-backend
+    hostname: backend
+    build: ./src/backend
+    ports:
+      - "8004:8000"
+    command: uvicorn app:app --host 0.0.0.0 --reload
+    volumes:
+      - ./src/backend:/usr/src/app
+    environment:
+      - CELERY_BROKER_URL=amqp://pwp:qwq@rabbit:5672
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_JOB_DB=redis://redis:6379/1
+    depends_on:
+      - redis
+
+  celery:
+    container_name: b330-celery
+    build: ./src/backend
+    command: celery worker --app=worker.celery --loglevel=info --uid=nobody --gid=nogroup
+    volumes:
+      - ./src/backend:/usr/src/app
+    environment:
+      - CELERY_BROKER_URL=amqp://pwp:qwq@rabbit:5672
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_JOB_DB=redis://redis:6379/1
+      - FASTAPI_HOST=http://backend:8000
+    depends_on:
+      - rabbit
+      - redis
+
+  dashboard:
+    build: ./src/backend
+    command: flower --app=worker.celery --port=5555 --broker=amqp://pwp:qwq@rabbit:5672
+    ports:
+      - "5556:5555"
+    environment:
+      - CELERY_BROKER_URL=amqp://pwp:qwq@rabbit:5672
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_JOB_DB=redis://redis:6379/1
+    depends_on:
+      - celery
