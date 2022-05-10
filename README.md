@@ -29,7 +29,7 @@ Once we finish running these two commands, leave the command window open, and op
 
 Frontend is built using React and required Node.JS. To install Node, see https://nodejs.org/en/ and download the LTS version.
 
-To run the frontend in a development environment, navigate to the frontend folder and run
+To run the frontend in a development environment, navigate to the frontend folder (`cd frontend/cmpd-enzym-pred-webapp`) and run
 ```bash
 npm install
 npm start
