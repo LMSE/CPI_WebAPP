@@ -17,12 +17,13 @@ git checkout .
 after installing Git LFS.
 
 ## Backend
-To run the backend, build and run the Docker containers. Navigate to the root directory of this repo and run the following commands. Install the latest Docker version at https://www.docker.com/get-started/ and follow the instructions.
+To run the backend, build and run the Docker containers. Navigate to the root directory of this repo and run the following commands. Install the latest Docker version at https://www.docker.com/get-started/ and follow the instructions. Note that we need to have Docker running in the background before running these commands.
 
 ```bash
 docker-compose build
 docker-compose up
 ```
+Once we finish running these two commands, leave the command window open, and open a new window for the remaining commands.
 
 ## Frontend
 
